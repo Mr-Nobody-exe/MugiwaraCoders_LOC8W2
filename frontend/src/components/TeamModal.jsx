@@ -3,7 +3,7 @@
  *
  * Full-screen modal shown when a team cluster is clicked.
  * Three tabs:
- *   INFO   — description, tech stack, mentor, score bar
+ *   INFO   — description, tech stack, mentor, commit activity
  *   REPO   — fake GitHub file tree, stat tiles, open link
  *   DEMO   — video player (or "no demo yet" placeholder)
  *
@@ -11,9 +11,9 @@
  *   team    {Team|null}
  *   onClose {() => void}
  */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { HumanSprite } from "./HumanSprite";
-import { TRACK_COLORS, STATUS_COLORS } from "../data/teams";
+import { TRACK_COLORS, STATUS_COLORS, HACKATHON_META } from "../data/teams";
 import "../styles/TeamModal.css";
 
 const TABS = [
@@ -30,20 +30,65 @@ const FILE_TREE = [
   { name: "📄  package.json", type: "file" },
 ];
 
+/**
+ * Derives the number of hourly slots from HACKATHON_META.startTime / endTime.
+ * Falls back to 48 h if the meta fields aren't present.
+ */
+function getHackathonHours() {
+  const { startTime, endTime } = HACKATHON_META;
+  if (startTime && endTime) {
+    const ms = new Date(endTime) - new Date(startTime);
+    return Math.max(1, Math.round(ms / 3_600_000));
+  }
+  return 48; // default: Nov 14-16 = 48 h
+}
+
+/**
+ * Distributes `commits` across `slots` hourly buckets with a
+ * realistic curve — slow start, ramp in the middle, spike near the end.
+ */
+function mockHourlyBuckets(commits, slots) {
+  // Weight curve: low early, high at ~80% mark (crunch time), moderate at end
+  const weights = Array.from({ length: slots }, (_, i) => {
+    const t = i / (slots - 1); // 0 → 1
+    return (
+      0.05 +
+      2.5 * Math.pow(t, 2) * Math.exp(-2.5 * Math.pow(t - 0.78, 2)) +
+      0.3 * Math.random()
+    );
+  });
+
+  const total = weights.reduce((s, w) => s + w, 0);
+  let allocated = 0;
+  const buckets = weights.map((w, i) => {
+    if (i === slots - 1) return Math.max(0, commits - allocated);
+    const val = Math.round((w / total) * commits);
+    allocated += val;
+    return val;
+  });
+  return buckets;
+}
+
 export function TeamModal({ team, onClose }) {
   const [tab,     setTab]     = useState("info");
   const [playing, setPlaying] = useState(false);
+  const [buckets, setBuckets] = useState([]);
+
+  const totalHours = useMemo(() => getHackathonHours(), []);
 
   // Reset state whenever the selected team changes
   useEffect(() => {
     setTab("info");
     setPlaying(false);
-  }, [team?.id]);
+    if (team) setBuckets(mockHourlyBuckets(team.commits ?? 0, totalHours));
+  }, [team?.id, totalHours]);
 
   if (!team) return null;
 
   const statusColor = STATUS_COLORS[team.status] || "#4ade80";
   const trackColor  = TRACK_COLORS[team.track]   || team.color;
+  const commits     = team.commits ?? 0;
+  const maxBucket   = Math.max(...buckets, 1);
 
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) onClose();
@@ -108,7 +153,7 @@ export function TeamModal({ team, onClose }) {
               <span style={{ color: trackColor }}>⚡ {team.track}</span>
               <span>👥 {team.members} members</span>
               <span>
-                🏆 <strong style={{ color: team.color }}>{team.score}</strong> pts
+                ⌨️ <strong style={{ color: team.color }}>{commits}</strong> commits
               </span>
             </div>
           </div>
@@ -163,20 +208,104 @@ export function TeamModal({ team, onClose }) {
                 </div>
               </div>
 
+              {/* ── Commit activity heatmap ── */}
               <div className="modal-score-row">
-                <span>Score</span>
+                <span>Commit Activity</span>
                 <span style={{ color: team.color, fontWeight: 700 }}>
-                  {team.score} / 100
+                  {commits} commits · {totalHours}h hackathon
                 </span>
               </div>
-              <div className="modal-progress-bar">
+
+              {/* Hourly heatmap grid */}
+              <div
+                style={{
+                  marginTop:    "10px",
+                  background:   "rgba(0,0,0,0.3)",
+                  borderRadius: "8px",
+                  padding:      "10px",
+                  border:       `1px solid ${team.color}18`,
+                }}
+              >
+                {/* Hour-of-day axis labels — 0 to 23 sampled every 6h */}
                 <div
-                  className="modal-progress-fill"
                   style={{
-                    width:      `${team.score}%`,
-                    background: `linear-gradient(90deg, ${team.color}, ${team.color}88)`,
+                    display:        "flex",
+                    justifyContent: "space-between",
+                    marginBottom:   "5px",
+                    fontSize:       "8px",
+                    color:          "rgba(255,255,255,0.25)",
+                    fontFamily:     "monospace",
+                    letterSpacing:  "0.05em",
+                    paddingRight:   "2px",
                   }}
-                />
+                >
+                  {Array.from({ length: Math.floor(totalHours / 6) + 1 }, (_, i) => (
+                    <span key={i}>H{i * 6}</span>
+                  ))}
+                </div>
+
+                {/* Heatmap cells — one cell per hour */}
+                <div
+                  style={{
+                    display:             "grid",
+                    gridTemplateColumns: `repeat(${totalHours}, 1fr)`,
+                    gap:                 "2px",
+                  }}
+                >
+                  {buckets.map((val, i) => {
+                    const intensity  = maxBucket > 0 ? val / maxBucket : 0;
+                    // Opacity: empty = faint tint, max = full glow
+                    const opacity    = intensity < 0.01 ? 0.07 : 0.15 + intensity * 0.85;
+                    const glowRadius = intensity > 0.6 ? `0 0 ${Math.round(intensity * 8)}px ${team.color}` : "none";
+
+                    return (
+                      <div
+                        key={i}
+                        title={`H${i}: ${val} commit${val !== 1 ? "s" : ""}`}
+                        style={{
+                          height:       "22px",
+                          borderRadius: "3px",
+                          background:   team.color,
+                          opacity,
+                          boxShadow:    glowRadius,
+                          transition:   "opacity 0.3s ease",
+                          cursor:       "default",
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+
+                {/* Legend */}
+                <div
+                  style={{
+                    display:        "flex",
+                    alignItems:     "center",
+                    justifyContent: "flex-end",
+                    gap:            "4px",
+                    marginTop:      "6px",
+                  }}
+                >
+                  <span style={{ fontSize: "8px", color: "rgba(255,255,255,0.25)", fontFamily: "monospace" }}>
+                    less
+                  </span>
+                  {[0.07, 0.25, 0.50, 0.75, 1.0].map((o) => (
+                    <div
+                      key={o}
+                      style={{
+                        width:        "10px",
+                        height:       "10px",
+                        borderRadius: "2px",
+                        background:   team.color,
+                        opacity:      o,
+                        boxShadow:    o === 1.0 ? `0 0 6px ${team.color}` : "none",
+                      }}
+                    />
+                  ))}
+                  <span style={{ fontSize: "8px", color: "rgba(255,255,255,0.25)", fontFamily: "monospace" }}>
+                    more
+                  </span>
+                </div>
               </div>
             </div>
           )}
@@ -220,7 +349,7 @@ export function TeamModal({ team, onClose }) {
                 {[
                   { icon: "⭐", label: "Stars",   value: 8  + team.id    },
                   { icon: "🍴", label: "Forks",   value: 2  + team.id    },
-                  { icon: "📝", label: "Commits", value: 24 + team.score },
+                  { icon: "📝", label: "Commits", value: commits          },
                 ].map((s) => (
                   <div key={s.label} className="modal-stat-tile">
                     <div className="modal-stat-tile__icon">{s.icon}</div>

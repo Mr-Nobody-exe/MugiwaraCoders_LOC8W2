@@ -1,8 +1,8 @@
 /**
  * Roster.jsx
  *
- * Fixed right-side leaderboard panel.
- * Teams sorted by score descending, each row has a tiny HumanSprite.
+ * Fixed right-side commit leaderboard panel.
+ * Teams sorted by commit count descending, each row has a tiny HumanSprite.
  * Clicking a row focuses camera on that team and selects it.
  *
  * Props:
@@ -16,11 +16,11 @@ import { HumanSprite } from "./HumanSprite";
 import "../styles/Roster.css";
 
 export function Roster({ teams, selected, hovered, onSelect, onHover }) {
-  const sorted = [...teams].sort((a, b) => b.score - a.score);
+  const sorted = [...teams].sort((a, b) => b.commits - a.commits);
 
   return (
     <aside className="roster">
-      <div className="roster__heading">LEADERBOARD</div>
+      <div className="roster__heading">⌨️ COMMIT ACTIVITY</div>
 
       {sorted.map((team, i) => {
         const isActive = selected === team.id;
@@ -51,7 +51,7 @@ export function Roster({ teams, selected, hovered, onSelect, onHover }) {
             <div className="roster__info">
               <div className="roster__name">{team.name}</div>
               <div className="roster__meta">
-                {team.score}pt · {team.members}👤
+                {team.commits} commits · {team.members}👤
               </div>
             </div>
           </div>
