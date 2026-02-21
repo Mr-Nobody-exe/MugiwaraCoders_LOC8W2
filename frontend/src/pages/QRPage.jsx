@@ -15,7 +15,7 @@ const MOCK_QR_DATA = {
 };
 
 /** Renders a basic SVG QR placeholder (real QR would use qrcode.react) */
-function QRCodeBox({ value, color = "#00f5c4", size = 160 }) {
+function QRCodeBox({ value, color = "rgba(255,255,255,0.7)", size = 160 }) {
   // Deterministic grid from hash of value
   const cells = [];
   for (let r = 0; r < 10; r++) {
@@ -74,7 +74,7 @@ export default function QRPage() {
           <div className="qr-valid-badge">✓ VERIFIED</div>
         </div>
         <div className="qr-entry-right">
-          <QRCodeBox value={MOCK_QR_DATA.entry} color="#00f5c4" size={180} />
+          <QRCodeBox value={MOCK_QR_DATA.entry} color="rgba(255,255,255,0.75)" size={180} />
           <div className="qr-code-text">{MOCK_QR_DATA.entry.slice(0, 18)}…</div>
         </div>
       </div>
@@ -84,7 +84,7 @@ export default function QRPage() {
       <div className="qr-meals-grid">
         {mealEntries.map(([meal, data]) => {
           const icons = { breakfast: "🌅", lunch: "☀️", dinner: "🌙" };
-          const colors = { breakfast: "#fb923c", lunch: "#38bdf8", dinner: "#7b5cfa" };
+          const colors = { breakfast: "rgba(255,255,255,0.7)", lunch: "rgba(255,255,255,0.7)", dinner: "rgba(255,255,255,0.7)" };
           return (
             <div key={meal} className={`card qr-meal-card ${data.used ? "qr-meal-card--used" : ""}`}>
               <div className="qr-meal-icon">{icons[meal]}</div>

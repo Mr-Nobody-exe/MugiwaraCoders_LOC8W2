@@ -71,10 +71,10 @@ export default function TeamPage() {
           {/* Team card */}
           <div className="card card--accent">
             <div className="team-header">
-              <div className="team-color-bar" style={{ background: myTeam.color }} />
+              <div className="team-color-bar" style={{ background: "var(--color-border2)" }} />
               <div>
-                <div className="team-name" style={{ color: myTeam.color }}>{myTeam.name}</div>
-                <div className="team-meta">{myTeam.track} · {myTeam.members} members · <span style={{ color: myTeam.color }}>{myTeam.score} pts</span></div>
+                <div className="team-name" style={{ fontWeight: 700 }}>{myTeam.name}</div>
+                <div className="team-meta">{myTeam.track} · {myTeam.members} members · <span style={{ fontWeight: 700 }}>{myTeam.score} pts</span></div>
               </div>
               <span className="badge" style={{ background: `${myTeam.color}18`, color: myTeam.color }}>{myTeam.status}</span>
             </div>

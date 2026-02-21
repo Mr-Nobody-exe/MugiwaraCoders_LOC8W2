@@ -1,26 +1,28 @@
-/* AdminTeamsPage.css */
+/* AdminTeamsPage.css — terminal */
 .admin-teams-page { display: flex; flex-direction: column; }
 
 .at-filters {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
-/* Reuse lb-filter from LeaderboardPage inline styles */
-.lb-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+.lb-filters { display: flex; gap: 6px; flex-wrap: wrap; }
+
 .lb-filter {
   background: none;
   border: 1px solid var(--color-border);
-  border-radius: 99px;
-  padding: 5px 14px;
-  font-family: var(--font-body);
-  font-size: 11px;
-  font-weight: 700;
+  padding: 4px 12px;
+  font-family: var(--font-mono);
+  font-size: 9px;
   color: var(--color-muted);
   cursor: pointer;
+  letter-spacing: 1px;
+  text-transform: uppercase;
   transition: var(--transition);
 }
-.lb-filter:hover { border-color: rgba(255,255,255,0.2); color: var(--color-text); }
+
+.lb-filter:hover { border-color: var(--color-border2); color: var(--color-text); }
+.lb-filter--active { border-color: rgba(255,255,255,0.3); color: var(--color-text); }
