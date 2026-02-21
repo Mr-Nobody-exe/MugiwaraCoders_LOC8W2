@@ -1,0 +1,54 @@
+/* ─────────────────────────────────────────────────────────────
+   animations.css
+   All @keyframes used across the application
+───────────────────────────────────────────────────────────── */
+
+/* ── Sprite limb cycles ── */
+@keyframes armSwingL {
+  from { transform: rotate(-20deg); }
+  to   { transform: rotate(16deg);  }
+}
+
+@keyframes armSwingR {
+  from { transform: rotate(16deg);  }
+  to   { transform: rotate(-20deg); }
+}
+
+@keyframes legSwingL {
+  from { transform: rotate(-16deg); }
+  to   { transform: rotate(14deg);  }
+}
+
+@keyframes legSwingR {
+  from { transform: rotate(14deg);  }
+  to   { transform: rotate(-16deg); }
+}
+
+/* ── UI entrance ── */
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Minimap dot pulse ── */
+@keyframes minimapPulse {
+  0%, 100% { r: 4.5; }
+  50%       { r: 6.5; }
+}
+
+/* ── Selection ring dash march ── */
+@keyframes dashMarch {
+  from { stroke-dashoffset: 0;  }
+  to   { stroke-dashoffset: 16; }
+}

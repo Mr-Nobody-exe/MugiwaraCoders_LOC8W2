@@ -1,0 +1,91 @@
+/* ─────────────────────────────────────────────────────────────
+   TopHud.css
+───────────────────────────────────────────────────────────── */
+
+.top-hud {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 300;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding: 10px 22px;
+  background: linear-gradient(
+    180deg,
+    rgba(4, 7, 13, 0.97) 0%,
+    rgba(4, 7, 13, 0.45) 100%
+  );
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.top-hud__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.top-hud__logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-purple));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.top-hud__title {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  color: var(--color-accent);
+  letter-spacing: 1px;
+}
+
+.top-hud__subtitle {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: var(--color-muted);
+  margin-top: 1px;
+}
+
+.top-hud__stats {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.top-hud__stat {
+  text-align: center;
+}
+
+.top-hud__stat-value {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+}
+
+.top-hud__stat-label {
+  font-family: var(--font-body);
+  font-size: 9px;
+  color: var(--color-muted);
+  margin-top: 1px;
+}
+
+.top-hud__divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.top-hud__hint {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: var(--color-muted);
+}

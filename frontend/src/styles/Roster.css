@@ -1,0 +1,83 @@
+/* ─────────────────────────────────────────────────────────────
+   Roster.css
+───────────────────────────────────────────────────────────── */
+
+.roster {
+  position: fixed;
+  top: 54px;
+  right: 0;
+  bottom: 0;
+  width: 186px;
+  z-index: 200;
+
+  background: rgba(5, 8, 14, 0.95);
+  backdrop-filter: blur(12px);
+  border-left: 1px solid rgba(255, 255, 255, 0.055);
+  overflow-y: auto;
+  padding: 10px 0;
+}
+
+.roster__heading {
+  font-family: var(--font-pixel);
+  font-size: 5.5px;
+  color: rgba(255, 255, 255, 0.2);
+  padding: 0 12px 10px;
+  letter-spacing: 1px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.roster__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: var(--transition);
+}
+
+.roster__item:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.roster__item--active {
+  border-left-color: var(--item-color, var(--color-accent));
+  background: color-mix(in srgb, var(--item-color, var(--color-accent)) 6%, transparent);
+}
+
+.roster__rank {
+  width: 16px;
+  font-family: var(--font-pixel);
+  font-size: 5.5px;
+  color: rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.roster__sprite {
+  flex-shrink: 0;
+}
+
+.roster__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.roster__name {
+  font-family: var(--font-pixel);
+  font-size: 5.5px;
+  color: rgba(255, 255, 255, 0.75);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 2px;
+}
+
+.roster__item--active .roster__name {
+  color: var(--item-color, var(--color-accent));
+}
+
+.roster__meta {
+  font-family: var(--font-body);
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.28);
+}
