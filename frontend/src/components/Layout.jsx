@@ -12,7 +12,6 @@ const NAV_BY_ROLE = {
   participant: [
     { path: "/dashboard",    icon: "⊞",  label: "Dashboard"     },
     { path: "/team",         icon: "👥", label: "My Team"       },
-    { path: "/leaderboard",  icon: "🏆", label: "Leaderboard"   },
     { path: "/world",        icon: "🗺️", label: "World Map"     },
     { path: "/qr",           icon: "◫",  label: "My QR Pass"    },
   ],
@@ -21,19 +20,16 @@ const NAV_BY_ROLE = {
     { path: "/admin/teams",  icon: "👥", label: "Teams"         },
     { path: "/admin/verify", icon: "✓",  label: "Verification"  },
     { path: "/admin/entry",  icon: "◫",  label: "Entry / Food"  },
-    { path: "/leaderboard",  icon: "🏆", label: "Leaderboard"   },
     { path: "/world",        icon: "🗺️", label: "World Map"     },
   ],
   judge: [
     { path: "/dashboard",    icon: "⊞",  label: "Dashboard"     },
     { path: "/judge/eval",   icon: "📋", label: "Evaluate"      },
-    { path: "/leaderboard",  icon: "🏆", label: "Leaderboard"   },
     { path: "/world",        icon: "🗺️", label: "World Map"     },
   ],
   mentor: [
     { path: "/dashboard",    icon: "⊞",  label: "Dashboard"     },
     { path: "/mentor/teams", icon: "👥", label: "My Teams"      },
-    { path: "/leaderboard",  icon: "🏆", label: "Leaderboard"   },
     { path: "/world",        icon: "🗺️", label: "World Map"     },
   ],
 };

@@ -9,9 +9,10 @@
  * HUD elements (TopHud, Roster, Minimap) are fixed overlays.
  * TeamModal is portal-like (fixed, z-index 600).
  */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-import { TEAMS, WORLD_W, WORLD_H, HACKATHON_META } from "./data/teams";
+import { WORLD_W, WORLD_H, HACKATHON_META } from "./data/teams";
+import { evalService } from "./services/api";
 import { useCamera }         from "./hooks/useCamera";
 import { useWander }         from "./hooks/useWander";
 
@@ -27,6 +28,32 @@ import { TeamModal }         from "./components/TeamModal";
 
 export default function WorldMap() {
   const [selected, setSelected] = useState(null);
+  const [teams,    setTeams]    = useState([]);
+
+  // Fetch live teams from API, normalise shape for world map
+  useEffect(() => {
+    evalService.getLeaderboard().then(res => {
+      const normalized = res.data.map(t => ({
+        id:          t._id,
+        name:        t.name,
+        track:       t.track,
+        members:     t.members?.length ?? 0,
+        score:       t.finalScore ?? 0,
+        status:      t.status,
+        x:           t.mapX ?? 300,
+        y:           t.mapY ?? 300,
+        color:       t.color ?? "#ffffff",
+        skinTones:   t.skinTones  ?? ["#f1c27d","#c68642"],
+        shirtColors: t.shirtColors ?? ["#ffffff","#cccccc"],
+        github:      t.submission?.githubUrl ?? "#",
+        demoVideo:   t.submission?.demoUrl   ?? "",
+        description: t.problemStatement ?? "",
+        techStack:   [],
+        mentor:      t.mentor?.name ?? "",
+      }));
+      setTeams(normalized);
+    }).catch(() => {});
+  }, []);
   const [hovered,  setHovered]  = useState(null);
 
   const {
@@ -36,7 +63,7 @@ export default function WorldMap() {
 
   const { offsets } = useWander();
 
-  const selectedTeam = selected ? TEAMS.find((t) => t.id === selected) : null;
+  const selectedTeam = selected ? teams.find((t) => t.id === selected) : null;
 
   const handleSelectTeam = (team) => {
     setSelected(team.id);
@@ -70,7 +97,7 @@ export default function WorldMap() {
       >
         <WorldBackground vw={vpSize.w} vh={vpSize.h} camX={camX} camY={camY} />
 
-        {TEAMS.map((team) => {
+        {teams.map((team) => {
           const off = offsets.find((o) => o.id === team.id) ?? { ox: 0, oy: 0 };
           return (
             <g key={team.id} data-team={team.id}>
@@ -97,10 +124,10 @@ export default function WorldMap() {
       </svg>
 
       {/* ── Fixed HUD overlays ── */}
-      <TopHud teams={TEAMS} meta={HACKATHON_META} />
+      <TopHud teams={teams} meta={HACKATHON_META} />
 
       <Roster
-        teams={TEAMS}
+        teams={teams}
         selected={selected}
         hovered={hovered}
         onSelect={handleSelectTeam}
@@ -108,7 +135,7 @@ export default function WorldMap() {
       />
 
       <Minimap
-        teams={TEAMS}
+        teams={teams}
         selected={selected}
         camX={camX}
         camY={camY}
