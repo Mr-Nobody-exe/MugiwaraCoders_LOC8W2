@@ -8,6 +8,8 @@ import morgan from 'morgan';
 
 import connectDB from './config/db.js';
 import { connectRedis } from './config/redis.js';
+import swaggerUi from "swagger-ui-express";
+import specs from "./config/swagger.js";
 import { errorHandler, notFound } from './middlewares/error.middleware.js';
 import socketHandler from './socket/socket.handler.js';
 
@@ -48,6 +50,8 @@ app.use('/api/qr', qrRoutes);
 app.use('/api/judge', judgeRoutes);
 app.use('/api/admin', adminRoutes);
 
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
 socketHandler(io);
@@ -56,4 +60,4 @@ app.use(notFound);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}.\nhttp://localhost:${PORT}/`));
