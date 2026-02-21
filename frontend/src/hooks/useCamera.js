@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { WORLD_W, WORLD_H } from "../data/teams";
 
 /**
@@ -25,7 +25,7 @@ export function useCamera() {
   const [drag, setDrag] = useState(null);
 
   // Keep viewport size in sync with window
-  useState(() => {
+  useEffect(() => {
     const fn = () => setVpSize({ w: window.innerWidth, h: window.innerHeight });
     window.addEventListener("resize", fn);
     return () => window.removeEventListener("resize", fn);
