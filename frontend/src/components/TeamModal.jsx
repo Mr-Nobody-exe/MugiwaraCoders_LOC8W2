@@ -11,9 +11,9 @@
  *   team    {Team|null}
  *   onClose {() => void}
  */
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { HumanSprite } from "./HumanSprite";
-import { TRACK_COLORS, STATUS_COLORS, HACKATHON_META } from "../data/teams";
+import { TRACK_COLORS, STATUS_COLORS } from "../data/teams";
 import "../styles/TeamModal.css";
 
 const TABS = [
