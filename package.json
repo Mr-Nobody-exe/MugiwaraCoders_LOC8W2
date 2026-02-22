@@ -1,0 +1,25 @@
+{
+  "name": "hackx",
+  "version": "1.0.0",
+  "description": "A full-stack web application built with the **MERN stack** to streamline hackathon event management — from participant registration and team formation to real-time QR-based check-ins and an intuitive admin dashboard.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mr-Nobody-exe/MugiwaraCoders_LOC8W2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Mr-Nobody-exe/MugiwaraCoders_LOC8W2/issues"
+  },
+  "homepage": "https://github.com/Mr-Nobody-exe/MugiwaraCoders_LOC8W2#readme",
+  "dependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
